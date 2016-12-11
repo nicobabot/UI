@@ -29,6 +29,7 @@ enum UI_Type {
 enum UI_Collision_Type {
 	right_click,
 	left_click,
+	left_click_off,
 	oncollision,
 	leftclickoutcollider,
 	notcolliding
@@ -83,10 +84,14 @@ public:
 				if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT) {
 					ret = right_click;
 				}
+				
 
 			}
 			else
 			{
+				if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP) {
+					ret = left_click_off;
+				}
 				if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN)
 				{
 					ret = leftclickoutcollider;

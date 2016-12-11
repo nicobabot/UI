@@ -12,6 +12,7 @@
 #include "j1Fonts.h"
 #include "j1Scene.h"
 #include"UI_Letters_NonStatic_Static.h"
+#include"UI_Slider.h"
 
 j1Scene::j1Scene() : j1Module()
 {
@@ -147,9 +148,15 @@ bool j1Scene::Start()
 	vertical_scroll_background.w = 11;
 	vertical_scroll_background.h = 148;
 
+	SDL_Rect ViewPort;
+	ViewPort.x = 0;
+	ViewPort.y = 0;
+	ViewPort.w = 287;
+	ViewPort.h = 136;
+
 	p2SString strtext;
-	strtext.create("Hola paco");
-	slider = (UI_Slider*)App->gui->CreateSlider(ui_slider, &vertical_scroll_ball_not_pressed, strtext, iPoint(100, 100), nullptr, nullptr, &vertical_scroll_background, &vertical_scroll_line, false);
+	strtext.create("Hola\n que\n tal\n estas\n paco");
+	slider = (UI_Slider*)App->gui->CreateSlider(ui_slider, &vertical_scroll_ball_pressed, strtext, iPoint(200, 100), iPoint(200, 100), nullptr, &ViewPort, &vertical_scroll_background, &vertical_scroll_line, true);
 
 
 	return true;
@@ -201,6 +208,9 @@ void j1Scene::Modif_Ui() {
 			break;
 		case UI_Type::ui_letters_non_static:
 			((UI_Letters_NonStatic*)temp->data)->ModifyNonStatString(temp->data, temp->data->onCollision());
+			break;
+		case UI_Type::ui_slider:
+			((UI_Slider*)temp->data)->ModifButtonSlider(temp->data, temp->data->onCollision());
 			break;
 		case UI_Type::ui_window:
 			if (Modif_Ui_WindowElem(temp->data) == false) {

@@ -36,8 +36,8 @@ void UI_Image::ModifyImage(UI* item, UI_Collision_Type state) {
 		if (movable == true) {
 			int motx, moty;
 			App->input->GetMouseMotion(motx, moty);
-			itempoint.x += motx;
-			itempoint.y += moty;
+				itempoint.x += motx;
+				itempoint.y += moty;
 		}
 		item->SetPosition(itempoint.x, itempoint.y);
 		UI_Collision.x = itempoint.x;

@@ -239,11 +239,11 @@ UI* j1Gui::CreateUiWindow(UI_Type entity_type, iPoint pos, SDL_Rect* rect, bool 
 	return ret;
 }
 
-UI * j1Gui::CreateSlider(UI_Type type, SDL_Rect * rect, p2SString text, iPoint pos, SDL_Rect * textrect, SDL_Rect * ViewPortRect, SDL_Rect * VerticalSliderBackgroundRect, SDL_Rect * VerticalSliderLineRect, bool movable)
+UI * j1Gui::CreateSlider(UI_Type type, SDL_Rect * rect, p2SString text, iPoint pos, iPoint SliderLinePos, SDL_Rect * textrect, SDL_Rect * ViewPortRect, SDL_Rect * VerticalSliderBackgroundRect, SDL_Rect * VerticalSliderLineRect, bool movable)
 {
 	UI* ret = nullptr;
 	if (type == ui_slider) {
-		ret = new UI_Slider(type, rect, text, pos, textrect, ViewPortRect, VerticalSliderBackgroundRect, VerticalSliderLineRect, movable);
+		ret = new UI_Slider(type, rect, text, pos, SliderLinePos,textrect, ViewPortRect, VerticalSliderBackgroundRect, VerticalSliderLineRect, movable);
 		UI_Elements.add(ret);
 	}
 	return ret;
@@ -299,6 +299,10 @@ void j1Gui::DebugDrawer(UI* item) {
 		case UI_Type::ui_window_to_window:
 		case UI_Type::ui_window:
 			App->render->DrawQuad(colliderrect, Lime(1), Lime(2), Lime(2), alpha);
+			break;
+		case UI_Type::ui_slider:
+		case UI_Type::ui_slider_to_window:
+			App->render->DrawQuad(colliderrect, Green(1), Green(1), Green(1), alpha);
 			break;
 		}
 	}

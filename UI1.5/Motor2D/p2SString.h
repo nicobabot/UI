@@ -225,6 +225,11 @@ public:
 		return str;
 	}
 
+	char* GetStringNotConst()
+	{
+		return str;
+	}
+
 	unsigned int GetCapacity() const
 	{
 		return size;

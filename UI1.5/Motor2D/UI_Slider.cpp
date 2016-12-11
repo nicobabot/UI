@@ -16,7 +16,7 @@ UI_Slider::UI_Slider()
 {
 }
 
-UI_Slider::UI_Slider(UI_Type type, SDL_Rect* rect, p2SString text, iPoint pos, SDL_Rect * textrect, SDL_Rect * ViewPortRect, SDL_Rect * VerticalSliderBackgroundRect, SDL_Rect * VerticalSliderLineRect, bool movable) : UI(type, pos, rect, movable)
+UI_Slider::UI_Slider(UI_Type type, SDL_Rect* rect, p2SString text, iPoint pos, iPoint SliderLinePos, SDL_Rect * textrect, SDL_Rect * ViewPortRect, SDL_Rect * VerticalSliderBackgroundRect, SDL_Rect * VerticalSliderLineRect, bool movable) : UI(type, pos, rect, movable)
 {
 	this->text = text;
 	if (textrect != nullptr) {
@@ -26,8 +26,8 @@ UI_Slider::UI_Slider(UI_Type type, SDL_Rect* rect, p2SString text, iPoint pos, S
 		this->textrect.h = textrect->h;
 	}
 	if (ViewPortRect != nullptr) {
-		this->ViewPortRect.x = ViewPortRect->x;
-		this->ViewPortRect.y = ViewPortRect->y;
+		this->ViewPortRect.x = pos.x-150;
+		this->ViewPortRect.y = pos.y+100;
 		this->ViewPortRect.w = ViewPortRect->w;
 		this->ViewPortRect.h = ViewPortRect->h;
 	}
@@ -41,12 +41,18 @@ UI_Slider::UI_Slider(UI_Type type, SDL_Rect* rect, p2SString text, iPoint pos, S
 	this->VerticalSliderBackgroundRect.w = VerticalSliderBackgroundRect->w;
 	this->VerticalSliderBackgroundRect.h = VerticalSliderBackgroundRect->h;
 
-	this->UI_Collision.x = rect->x;
-	this->UI_Collision.y = rect->y;
+	this->UI_Rect.x = rect->x;
+	this->UI_Rect.y = rect->y;
+	this->UI_Rect.w = rect->w;
+	this->UI_Rect.h = rect->h;
+
+	this->UI_Collision.x = pos.x;
+	this->UI_Collision.y = pos.y;
 	this->UI_Collision.w = rect->w;
 	this->UI_Collision.h = rect->h;
-
 	this->movable = movable;
+
+	this->SliderLinePos = SliderLinePos;
 }
 
 UI_Slider::~UI_Slider()
@@ -55,7 +61,68 @@ UI_Slider::~UI_Slider()
 
 void UI_Slider::Draw(UI * item)
 {
-	App->render->Blit(App->gui->GetAtlasNotConst(), item->Getpos().x - App->render->camera.x, item->Getpos().y - App->render->camera.y, &((UI_Slider*)item)->VerticalSliderBackgroundRect);
-	App->render->Blit(App->gui->GetAtlasNotConst(), item->Getpos().x - App->render->camera.x, item->Getpos().y - App->render->camera.y, &((UI_Slider*)item)->VerticalSliderLineRect);
-	App->render->Blit(App->gui->GetAtlasNotConst(), item->Getpos().x - App->render->camera.x, item->Getpos().y - App->render->camera.y, &((UI_Slider*)item)->UI_Collision);
+	App->render->Blit(App->gui->GetAtlasNotConst(), ((UI_Slider*)item)->SliderLinePos.x - App->render->camera.x, ((UI_Slider*)item)->SliderLinePos.y+ - App->render->camera.y, &((UI_Slider*)item)->VerticalSliderBackgroundRect);
+	App->render->Blit(App->gui->GetAtlasNotConst(), ((UI_Slider*)item)->SliderLinePos.x - App->render->camera.x, ((UI_Slider*)item)->SliderLinePos.y- App->render->camera.y, &((UI_Slider*)item)->VerticalSliderLineRect);
+	App->render->Blit(App->gui->GetAtlasNotConst(), item->Getpos().x - App->render->camera.x, item->Getpos().y - App->render->camera.y, &((UI_Slider*)item)->GetRect());
+
+	App->render->DrawQuad(((UI_Slider*)item)->ViewPortRect,246,246,246,100,false,false);
+	
+	SDL_Texture *texture_to_blit = App->font->Print(((UI_Slider*)item)->text.GetString());
+	
+	SDL_RenderSetViewport(App->render->renderer, &((UI_Slider*)item)->ViewPortRect);
+
+	App->render->Blit(texture_to_blit, ((UI_Slider*)item)->Getpos().x-100-App->render->camera.x, ((UI_Slider*)item)->Getpos().y-App->render->camera.y);
+	SDL_DestroyTexture(texture_to_blit);
+	SDL_RenderSetViewport(App->render->renderer, NULL);
 }
+
+void UI_Slider::ModifButtonSlider(UI* item, UI_Collision_Type state)
+{
+	ModifText(item);
+	iPoint itempoint;
+	switch (state) {
+	case left_click:
+		click = true;
+		break;
+	case left_click_off:
+		click = false;
+		break;
+	}
+
+	if (click == true) {
+		itempoint = item->Getpos();
+		if (movable == true && itempoint.y <= ((UI_Slider*)item)->SliderLinePos.y +((UI_Slider*)item)->VerticalSliderLineRect.h - ((UI_Slider*)item)->UI_Rect.h && itempoint.y >= ((UI_Slider*)item)->SliderLinePos.y) {
+			int motx, moty;
+			App->input->GetMouseMotion(motx, moty);
+			if (itempoint.y + moty >((UI_Slider*)item)->SliderLinePos.y +((UI_Slider*)item)->VerticalSliderLineRect.h - ((UI_Slider*)item)->UI_Rect.h && itempoint.y || itempoint.y + moty < ((UI_Slider*)item)->SliderLinePos.y) {
+			}
+			else {
+				itempoint.y += moty;
+			}
+		}
+		int result = itempoint.y - (((UI_Slider*)item)->SliderLinePos.y + ((UI_Slider*)item)->VerticalSliderLineRect.h - ((UI_Slider*)item)->UI_Rect.h);
+		item->SetPosition(itempoint.x, itempoint.y);
+		UI_Collision.x = itempoint.x;
+		UI_Collision.y = itempoint.y;
+		
+	}
+	
+}
+
+void UI_Slider::ModifText(UI* item)
+{
+	char *next_token1 = NULL;
+	p2DynArray<char*> token1;
+	char seps[] = "\n";
+	token1.PushBack(strtok_s(((UI_Slider*)item)->text.GetStringNotConst(), seps, &next_token1));
+	int i = 0;
+	if (token1.Count() > 0) {
+		while (i!= ((UI_Slider*)item)->text.Length())
+		{
+			token1.PushBack(strtok_s(NULL, seps, &next_token1));
+			i++;
+		}
+	}
+
+}
+
