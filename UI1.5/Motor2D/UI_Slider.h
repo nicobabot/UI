@@ -33,6 +33,7 @@ private:
 	float result;
 	p2DynArray<char*> token1;
 	p2DynArray<SDL_Texture*> texturestext;
+	int Text_Tot_H=0;
 };
 
 #endif

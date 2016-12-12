@@ -155,8 +155,8 @@ bool j1Scene::Start()
 	ViewPort.h = 136;
 
 	p2SString strtext;
-	strtext.create("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse enim nunc, tempor a pharetra et, porta at leo. Ut non tincidunt justo. Nulla feugiat felis a massa feugiat, nec finibus arcu auctor. Morbi lobortis, purus vel pellentesque feugiat, est lacus accumsan turpis, in tincidunt urna dui id leo.");
-	slider = (UI_Slider*)App->gui->CreateSlider(ui_slider, &vertical_scroll_ball_pressed, &strtext, iPoint(200, 100), iPoint(200, 100), nullptr, &ViewPort, &vertical_scroll_background, &vertical_scroll_line, true);
+	strtext.create("HOLA\nMARIAJOSE\nCOMO\nESTAS\nPORQUE\nYO\nESTOY\nMAL");
+	slider = (UI_Slider*)App->gui->CreateSlider(ui_slider, &vertical_scroll_ball_pressed, &strtext, iPoint(400, 100), iPoint(400, 100), nullptr, &ViewPort, &vertical_scroll_background, &vertical_scroll_line, true);
 
 
 	return true;

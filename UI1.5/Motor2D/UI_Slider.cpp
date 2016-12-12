@@ -26,7 +26,7 @@ UI_Slider::UI_Slider(UI_Type type, SDL_Rect* rect, p2SString *text, iPoint pos, 
 		this->textrect.h = textrect->h;
 	}
 	if (ViewPortRect != nullptr) {
-		this->ViewPortRect.x = pos.x-150;
+		this->ViewPortRect.x = pos.x-300;
 		this->ViewPortRect.y = pos.y+100;
 		this->ViewPortRect.w = ViewPortRect->w;
 		this->ViewPortRect.h = ViewPortRect->h;
@@ -75,7 +75,7 @@ void UI_Slider::Draw(UI * item)
 	
 	SDL_RenderSetViewport(App->render->renderer, &((UI_Slider*)item)->ViewPortRect);
 	for (int i = 0; i < texturestext.Count(); i++) {
-		App->render->Blit(texturestext[i], 0 - App->render->camera.x, 0 - App->render->camera.y);
+		App->render->Blit(texturestext[i], 0 - App->render->camera.x, i*10 - App->render->camera.y);
 		//SDL_DestroyTexture(texturestext[i]);
 	}
 	SDL_RenderSetViewport(App->render->renderer, NULL);
@@ -112,6 +112,8 @@ void UI_Slider::ModifButtonSlider(UI* item, UI_Collision_Type state)
 		float maximumsliderbarr = ((UI_Slider*)item)->VerticalSliderLineRect.h;
 		result = 100 * ((sliderbutton_y - minimumhsliderbarr) / (maximumsliderbarr - sliderbutton_h));
 		LOG("Result:%f", result);
+		
+
 		item->SetPosition(itempoint.x, itempoint.y);
 		
 		UI_Collision.x = itempoint.x;
@@ -121,18 +123,24 @@ void UI_Slider::ModifButtonSlider(UI* item, UI_Collision_Type state)
 
 void UI_Slider::ModifText(p2SString item)
 {
+	int texture_w;
+	int texture_h;
 	char* str = item.GetStringNotConst();
 	char *next_token1 = NULL;
-	char seps[] = ".,";
+	char seps[] = "\n";
 	token1.PushBack(strtok_s(str, seps, &next_token1));
 	if (token1.Count() > 0) {
 		while (*next_token1 !='\0')
 		{
 			token1.PushBack(strtok_s(NULL, seps, &next_token1));
+			
 		}
 	}
 	for (int i = 0; i < token1.Count(); i++) {
 		texturestext.PushBack(App->font->Print(token1[i]));
+		App->font->CalcSize(token1[i], texture_w, texture_h);
+		Text_Tot_H += texture_h;
 	}
+	int increm = Text_Tot_H / 100;
 }
 
