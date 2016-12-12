@@ -52,6 +52,7 @@ private:
 	*/
 	UI_Image* banner;
 	UI_Letters_Static* text;
+	UI_Letters_Static* textbox;
 	UI_Buttons* button;
 	UI_Buttons* button2;
 	UI_Image* Window;

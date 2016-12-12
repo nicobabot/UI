@@ -16,9 +16,9 @@ UI_Slider::UI_Slider()
 {
 }
 
-UI_Slider::UI_Slider(UI_Type type, SDL_Rect* rect, p2SString text, iPoint pos, iPoint SliderLinePos, SDL_Rect * textrect, SDL_Rect * ViewPortRect, SDL_Rect * VerticalSliderBackgroundRect, SDL_Rect * VerticalSliderLineRect, bool movable) : UI(type, pos, rect, movable)
+UI_Slider::UI_Slider(UI_Type type, SDL_Rect* rect, p2SString *text, iPoint pos, iPoint SliderLinePos, SDL_Rect * textrect, SDL_Rect * ViewPortRect, SDL_Rect * VerticalSliderBackgroundRect, SDL_Rect * VerticalSliderLineRect, bool movable) : UI(type, pos, rect, movable)
 {
-	this->text = text;
+	this->text = *text;
 	if (textrect != nullptr) {
 		this->textrect.x = textrect->x;
 		this->textrect.y = textrect->y;
@@ -53,6 +53,11 @@ UI_Slider::UI_Slider(UI_Type type, SDL_Rect* rect, p2SString text, iPoint pos, i
 	this->movable = movable;
 
 	this->SliderLinePos = SliderLinePos;
+
+	OriginalCamera.x = App->render->camera.x;
+	OriginalCamera.y = App->render->camera.y;
+
+	ModifText(*text);
 }
 
 UI_Slider::~UI_Slider()
@@ -61,24 +66,24 @@ UI_Slider::~UI_Slider()
 
 void UI_Slider::Draw(UI * item)
 {
-	App->render->Blit(App->gui->GetAtlasNotConst(), ((UI_Slider*)item)->SliderLinePos.x - App->render->camera.x, ((UI_Slider*)item)->SliderLinePos.y+ - App->render->camera.y, &((UI_Slider*)item)->VerticalSliderBackgroundRect);
+	
+	App->render->Blit(App->gui->GetAtlasNotConst(), ((UI_Slider*)item)->SliderLinePos.x - App->render->camera.x, ((UI_Slider*)item)->SliderLinePos.y - App->render->camera.y, &((UI_Slider*)item)->VerticalSliderBackgroundRect);
 	App->render->Blit(App->gui->GetAtlasNotConst(), ((UI_Slider*)item)->SliderLinePos.x - App->render->camera.x, ((UI_Slider*)item)->SliderLinePos.y- App->render->camera.y, &((UI_Slider*)item)->VerticalSliderLineRect);
 	App->render->Blit(App->gui->GetAtlasNotConst(), item->Getpos().x - App->render->camera.x, item->Getpos().y - App->render->camera.y, &((UI_Slider*)item)->GetRect());
 
-	App->render->DrawQuad(((UI_Slider*)item)->ViewPortRect,246,246,246,100,false,false);
-	
-	SDL_Texture *texture_to_blit = App->font->Print(((UI_Slider*)item)->text.GetString());
+	App->render->DrawQuad(((UI_Slider*)item)->ViewPortRect,246,246,246,255,false,false);
 	
 	SDL_RenderSetViewport(App->render->renderer, &((UI_Slider*)item)->ViewPortRect);
-
-	App->render->Blit(texture_to_blit, ((UI_Slider*)item)->Getpos().x-100-App->render->camera.x, ((UI_Slider*)item)->Getpos().y-App->render->camera.y);
-	SDL_DestroyTexture(texture_to_blit);
+	for (int i = 0; i < texturestext.Count(); i++) {
+		App->render->Blit(texturestext[i], 0 - App->render->camera.x, 0 - App->render->camera.y);
+		//SDL_DestroyTexture(texturestext[i]);
+	}
 	SDL_RenderSetViewport(App->render->renderer, NULL);
 }
 
 void UI_Slider::ModifButtonSlider(UI* item, UI_Collision_Type state)
 {
-	ModifText(item);
+
 	iPoint itempoint;
 	switch (state) {
 	case left_click:
@@ -100,29 +105,34 @@ void UI_Slider::ModifButtonSlider(UI* item, UI_Collision_Type state)
 				itempoint.y += moty;
 			}
 		}
-		int result = itempoint.y - (((UI_Slider*)item)->SliderLinePos.y + ((UI_Slider*)item)->VerticalSliderLineRect.h - ((UI_Slider*)item)->UI_Rect.h);
+		//calc value of slider
+		float sliderbutton_y = itempoint.y;
+		float sliderbutton_h = ((UI_Slider*)item)->UI_Rect.h;
+		float minimumhsliderbarr = ((UI_Slider*)item)->SliderLinePos.y;
+		float maximumsliderbarr = ((UI_Slider*)item)->VerticalSliderLineRect.h;
+		result = 100 * ((sliderbutton_y - minimumhsliderbarr) / (maximumsliderbarr - sliderbutton_h));
+		LOG("Result:%f", result);
 		item->SetPosition(itempoint.x, itempoint.y);
+		
 		UI_Collision.x = itempoint.x;
 		UI_Collision.y = itempoint.y;
-		
-	}
-	
+	}	
 }
 
-void UI_Slider::ModifText(UI* item)
+void UI_Slider::ModifText(p2SString item)
 {
+	char* str = item.GetStringNotConst();
 	char *next_token1 = NULL;
-	p2DynArray<char*> token1;
-	char seps[] = "\n";
-	token1.PushBack(strtok_s(((UI_Slider*)item)->text.GetStringNotConst(), seps, &next_token1));
-	int i = 0;
+	char seps[] = ".,";
+	token1.PushBack(strtok_s(str, seps, &next_token1));
 	if (token1.Count() > 0) {
-		while (i!= ((UI_Slider*)item)->text.Length())
+		while (*next_token1 !='\0')
 		{
 			token1.PushBack(strtok_s(NULL, seps, &next_token1));
-			i++;
 		}
 	}
-
+	for (int i = 0; i < token1.Count(); i++) {
+		texturestext.PushBack(App->font->Print(token1[i]));
+	}
 }
 

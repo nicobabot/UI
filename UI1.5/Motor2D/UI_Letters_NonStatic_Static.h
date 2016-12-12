@@ -48,6 +48,8 @@ public:
 	bool onCollision(UI* element);
 	void ModifyStatString(UI* item, UI_Collision_Type state);
 	void SetCollision(iPoint *col);
+	char* GetStr();
+	int GetStrLength();
 private:
 	p2SString originalstr;
 	p2SString string;

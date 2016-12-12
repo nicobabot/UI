@@ -328,4 +328,14 @@ void UI_Letters_Static::SetCollision(iPoint * col)
 	this->UI_Collision.y = col->y;
 }
 
+char* UI_Letters_Static::GetStr()
+{
+	return string.GetStringNotConst();
+}
+
+int UI_Letters_Static::GetStrLength()
+{
+	return string.Length();
+}
+
 

@@ -239,7 +239,7 @@ UI* j1Gui::CreateUiWindow(UI_Type entity_type, iPoint pos, SDL_Rect* rect, bool 
 	return ret;
 }
 
-UI * j1Gui::CreateSlider(UI_Type type, SDL_Rect * rect, p2SString text, iPoint pos, iPoint SliderLinePos, SDL_Rect * textrect, SDL_Rect * ViewPortRect, SDL_Rect * VerticalSliderBackgroundRect, SDL_Rect * VerticalSliderLineRect, bool movable)
+UI * j1Gui::CreateSlider(UI_Type type, SDL_Rect * rect, p2SString* text, iPoint pos, iPoint SliderLinePos, SDL_Rect * textrect, SDL_Rect * ViewPortRect, SDL_Rect * VerticalSliderBackgroundRect, SDL_Rect * VerticalSliderLineRect, bool movable)
 {
 	UI* ret = nullptr;
 	if (type == ui_slider) {
