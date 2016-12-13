@@ -149,15 +149,29 @@ bool j1Scene::Start()
 	vertical_scroll_background.h = 148;
 
 	SDL_Rect ViewPort;
-	ViewPort.x = 0;
-	ViewPort.y = 0;
+	ViewPort.x = 100;
+	ViewPort.y = 200;
 	ViewPort.w = 287;
 	ViewPort.h = 136;
 
+
 	p2SString strtext;
 	strtext.create("HOLA\nMARIAJOSE\nCOMO\nESTAS\nPORQUE\nYO\nESTOY\nMAL");
-	slider = (UI_Slider*)App->gui->CreateSlider(ui_slider, &vertical_scroll_ball_pressed, &strtext, iPoint(400, 100), iPoint(400, 100), nullptr, &ViewPort, &vertical_scroll_background, &vertical_scroll_line, true);
+	slider = (UI_Slider*)App->gui->CreateSlider(ui_slider, &vertical_scroll_ball_pressed, &strtext, iPoint(400, 100), vertical_slider, iPoint(400, 100), &ViewPort, &vertical_scroll_background, &vertical_scroll_line, false);
+	
+	SDL_Rect horizontal_slider_bar;
+	horizontal_slider_bar.x = 557;
+	horizontal_slider_bar.y = 61;
+	horizontal_slider_bar.w = 236;
+	horizontal_slider_bar.h = 10;
 
+	SDL_Rect button_horizontal;
+	button_horizontal.x = 812;
+	button_horizontal.y = 317;
+	button_horizontal.w = 12;
+	button_horizontal.h = 15;
+
+	slider = (UI_Slider*)App->gui->CreateSlider(ui_slider_to_window, &button_horizontal, &strtext, iPoint(400, 100), horizontal_slider, iPoint(400, 100), &ViewPort, &vertical_scroll_background, &horizontal_slider_bar, false, Window);
 
 	return true;
 }
@@ -248,6 +262,12 @@ bool j1Scene::Modif_Ui_WindowElem(UI* window) {
 			break;
 		case ui_letters_non_static_to_window:
 			((UI_Letters_NonStatic*)temp->data)->ModifyNonStatString(temp->data, temp->data->onCollision());
+			if (temp->data->onCollision() == left_click) {
+				movingitem = true;
+			}
+			break;
+		case UI_Type::ui_slider_to_window:
+			((UI_Slider*)temp->data)->ModifButtonSlider(temp->data, temp->data->onCollision());
 			if (temp->data->onCollision() == left_click) {
 				movingitem = true;
 			}

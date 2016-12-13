@@ -4,7 +4,7 @@
 #include "j1Render.h"
 #include"j1Fonts.h"
 #include"UI_Letters_NonStatic_Static.h"
-
+#include"UI_Slider.h"
 //-----------------------------------------------UI_Image-----------------------------------------------
 UI_Image::UI_Image()
 {
@@ -70,7 +70,10 @@ void UI_Image::Draw(UI* item)
 				case ui_letters_static_to_window:
 					((UI_Letters_Static*)temp->data)->Draw(temp->data);
 					break;
-					case ui_window_to_window:
+				case ui_slider_to_window:
+					((UI_Slider*)temp->data)->Draw(temp->data);
+					break;
+				case ui_window_to_window:
 						((UI_Image*)temp->data)->Draw(temp->data);
 						break;
 				}
@@ -111,6 +114,9 @@ void UI_Image::MoveQueue(UI* item)
 				break;
 			case ui_letters_static_to_window:
 				((UI_Letters_Static*)temporal->data)->SetCollision(&position);
+				break;
+			case ui_slider_to_window:
+				((UI_Slider*)temporal->data)->SetCollision(&position);
 				break;
 			case ui_window_to_window:
 				((UI_Image*)temporal->data)->SetCollision(&position);

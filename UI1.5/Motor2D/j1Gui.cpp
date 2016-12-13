@@ -239,12 +239,17 @@ UI* j1Gui::CreateUiWindow(UI_Type entity_type, iPoint pos, SDL_Rect* rect, bool 
 	return ret;
 }
 
-UI * j1Gui::CreateSlider(UI_Type type, SDL_Rect * rect, p2SString* text, iPoint pos, iPoint SliderLinePos, SDL_Rect * textrect, SDL_Rect * ViewPortRect, SDL_Rect * VerticalSliderBackgroundRect, SDL_Rect * VerticalSliderLineRect, bool movable)
+UI * j1Gui::CreateSlider(UI_Type type, SDL_Rect * rect, p2SString* text, iPoint pos, Slider_type slider_type, iPoint SliderLinePos, SDL_Rect * ViewPortRect, SDL_Rect * VerticalSliderBackgroundRect, SDL_Rect * VerticalSliderLineRect, bool movable, UI_Image *window_point)
 {
 	UI* ret = nullptr;
+	if (type == ui_slider || type == ui_slider_to_window) {
+		ret = new UI_Slider(type, rect, text, pos, slider_type, SliderLinePos, ViewPortRect, VerticalSliderBackgroundRect, VerticalSliderLineRect, movable);
+	}
 	if (type == ui_slider) {
-		ret = new UI_Slider(type, rect, text, pos, SliderLinePos,textrect, ViewPortRect, VerticalSliderBackgroundRect, VerticalSliderLineRect, movable);
 		UI_Elements.add(ret);
+	}
+	else if(type == ui_slider_to_window){
+		window_point->PushQueueWindow(ret);
 	}
 	return ret;
 }

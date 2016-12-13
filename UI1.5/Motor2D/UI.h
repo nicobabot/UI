@@ -35,6 +35,12 @@ enum UI_Collision_Type {
 	notcolliding
 };
 
+enum Slider_type {
+	vertical_slider,
+	horizontal_slider,
+	vertical_and_horizontal_slider
+};
+
 class UI
 {
 public:

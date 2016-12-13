@@ -139,7 +139,7 @@ bool j1App::Start()
 	startup_time.Start();
 
 	PERF_PEEK(ptimer);
-
+	capped_ms = 15;
 	return ret;
 }
 

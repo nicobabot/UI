@@ -47,7 +47,7 @@ public:
 	UI* CreateStaticLetters(UI_Type entity_type, iPoint pos, p2SString* string, bool movable = false, UI_Image *window_point = nullptr);
 	UI* CreateNonStaticLetters(UI_Type entity_type, iPoint pos, p2SString* string, SDL_Rect writingrect ,bool movable = false, UI_Image *window_point=nullptr);
 	UI* CreateUiWindow(UI_Type entity_type, iPoint pos, SDL_Rect* rect, bool movable = false, UI_Image *window_point = nullptr);
-	UI* CreateSlider(UI_Type type, SDL_Rect* rect, p2SString *text, iPoint pos, iPoint SliderLinePos, SDL_Rect * textrect = nullptr, SDL_Rect * ViewPortRect = nullptr, SDL_Rect * VerticalSliderBackgroundRect = nullptr, SDL_Rect * VerticalSliderLineRect = nullptr, bool movable = false);
+	UI* CreateSlider(UI_Type type, SDL_Rect* rect, p2SString *text, iPoint pos, Slider_type slider_type,iPoint SliderLinePos, SDL_Rect * ViewPortRect = nullptr, SDL_Rect * VerticalSliderBackgroundRect = nullptr, SDL_Rect * VerticalSliderLineRect = nullptr, bool movable = false, UI_Image *window_point=nullptr);
 	bool Delete(UI* entity_to_delete);
 
 	p2List_item<UI*>* GetListStart();
